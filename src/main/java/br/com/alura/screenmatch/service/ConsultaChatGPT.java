@@ -6,7 +6,7 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 
 public class ConsultaChatGPT {
     public static String obterTraducao(String texto) {
-        OpenAiService service = new OpenAiService(System.getenv("CHAVE_SCREENMATCH_OPENAI"));
+        OpenAiService service = new OpenAiService(System.getenv("OPENAI_APIKEY"));
 
         CompletionRequest requisicao = CompletionRequest.builder()
                 .model("gpt-3.5-turbo-instruct")
