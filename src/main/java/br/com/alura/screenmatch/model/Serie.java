@@ -17,7 +17,7 @@ public class Serie {
     private String titulo;
     private String Ano;
     private Integer totalTemporadas;
-    private Double avalicao;
+    private Double avaliacao;
     @Enumerated(EnumType.STRING)
     private Categoria genero;
     private String atores;
@@ -34,7 +34,7 @@ public class Serie {
         this.titulo = dadosSerie.titulo();
         this.Ano = dadosSerie.Ano();
         this.totalTemporadas = dadosSerie.totalTemporadas();
-        this.avalicao = OptionalDouble.of(Double.valueOf(dadosSerie.avalicao())).orElse(0);
+        this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0);
         this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim());
         this.atores = dadosSerie.atores();
         this.poster = dadosSerie.poster();
@@ -102,17 +102,17 @@ public class Serie {
     }
 
     /**
-     * @return Double return the avalicao
+     * @return Double return the avaliacao
      */
-    public Double getAvalicao() {
-        return avalicao;
+    public Double getAvaliacao() {
+        return avaliacao;
     }
 
     /**
-     * @param avalicao the avalicao to set
+     * @param avaliacao the avaliacao to set
      */
-    public void setAvalicao(Double avalicao) {
-        this.avalicao = avalicao;
+    public void setAvaliacao(Double avaliacao) {
+        this.avaliacao = avaliacao;
     }
 
     /**
@@ -179,7 +179,7 @@ public class Serie {
                  ", titulo='" + titulo +
                  ", Ano='" + Ano +
                  ", totalTemporadas='" + totalTemporadas +
-                 ", avalicao='" + avalicao +
+                 ", avaliacao='" + avaliacao +
                  ", atores='" + atores +
                  ", poster='" + poster +
                  ", sinopse='" + sinopse +
