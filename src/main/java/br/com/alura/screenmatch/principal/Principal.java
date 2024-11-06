@@ -34,6 +34,8 @@ public class Principal {
                     5 - Buscar séries por ator
                     6 - Buscar 5 top séries
                     7 - Buscar séries por categoria
+                    8 - Bucar séries por total de temporadas e bem avaliado
+                    9 - Buscar episódio por trecho
                     
                     0 - Sair                                 
                     """;
@@ -69,6 +71,12 @@ public class Principal {
                     break;
                 case 7:
                     buscarSeriePorCategoria();
+                    break;
+                case 8:
+                    buscarTotalTemporadas();
+                    break;
+                case 9:
+                    buscarEpisodioPorTrecho();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -174,6 +182,31 @@ public class Principal {
         System.out.println("Série da categoria " + nomegenero);
         seriesPorCategoria.forEach(System.out::println);
 
+    }
+
+    private void buscarTotalTemporadas() {
+        System.out.println("Até quantas temporadas você quer assistir? ");
+        var totalTemporadas = leitura.nextInt();
+        leitura.nextLine();
+        System.out.println("Com avaliação a partir de que valor? ");
+        var avaliacao = leitura.nextDouble();
+        leitura.nextLine();
+        List<Serie> filtroSeries = repositorio.seriesPorTemporadasEAvaliacao(totalTemporadas, avaliacao);
+        System.out.println("*** Séries filtradas ***");
+        filtroSeries.forEach(s ->
+                System.out.println(s.getTitulo() + " avaliação: " + s.getAvaliacao()));
+
+    }
+
+    private void buscarEpisodioPorTrecho() {
+        System.out.println("Qual o nome do episódio você quer assistir? ");
+        var trechoEpisodio = leitura.nextLine();
+
+        List<Episodio> episodiosEncotrados = repositorio.episodioPorTrecho(trechoEpisodio);
+        episodiosEncotrados.forEach(e ->
+                        System.out.printf("Série: %s Temporada %s - Episódio %s - %s\n",
+                                e.getSerie().getTitulo(), e.getTemporada(),
+                                e.getNumeroEpisodio(), e.getTitulo()));
     }
 
 }
