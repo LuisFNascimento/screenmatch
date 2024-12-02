@@ -100,7 +100,6 @@ public class Principal {
         DadosSerie dados = getDadosSerie();
         Serie serie = new Serie(dados);
         if (dados != null) {
-            //dadosSeries.add(dados);
             repositorio.save(serie);
             System.out.println(dados);
         }
