@@ -1,5 +1,3 @@
-redução de preço
-Copiar
 # ScreenMatch - Sistema de Busca e Gerenciamento de Séries
 
 ## Descrição
@@ -97,12 +95,3 @@ Contato
 Dúvidas ou sugestões, entre em contato: [seu email ou github]
 
 Este projeto demonstra integração com APIs externas, uso de Java Streams, Optionals, além de consumo de APIs REST e integração com OpenAI para traduções automáticas.
-
-Texto
-Copiar
-
-Quer que eu ajuste ou adicione algum detalhe extra?
-Regenerar
-Copiar
-Boa resposta
-Resposta ruim
