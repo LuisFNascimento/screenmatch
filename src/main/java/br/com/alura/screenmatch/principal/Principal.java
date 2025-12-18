@@ -98,11 +98,16 @@ public class Principal {
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
-        Serie serie = new Serie(dados);
-        if (dados != null) {
-            repositorio.save(serie);
-            System.out.println(dados);
+        if (dados == null) return;
+
+        if (repositorio.existsByTituloIgnoreCase(dados.titulo())) {
+            System.out.println("⚠️ Série já cadastrada!");
+            return;
         }
+
+        Serie serie = new Serie(dados);
+        repositorio.save(serie);
+        System.out.println("✔️ Série salva com sucesso!");
     }
 
     private DadosSerie getDadosSerie() {
