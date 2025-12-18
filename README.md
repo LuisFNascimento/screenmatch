@@ -1,48 +1,115 @@
-# ScreenMatch - Sistema de Busca e Gerenciamento de Séries
+# 🎬 ScreenMatch — Sistema de Busca e Gerenciamento de Séries
 
-## Descrição
-O projeto ScreenMatch é uma aplicação Java que permite buscar, listar, e gerenciar séries e episódios. Ele integra dados de uma API externa (OMDb API) e armazena informações em um repositório local. Oferece funcionalidades como busca por título, ator, categoria, avaliações e episódios específicos, além de consultar séries através de critérios variados.
+## 📌 Visão Geral
 
-Além disso, o projeto possui um serviço de tradução usando o ChatGPT (OpenAI API) e uma implementação de consumo de API de forma genérica.
+O **ScreenMatch** é uma aplicação Java desenvolvida com **Spring Boot** que permite buscar, armazenar, consultar e analisar séries e episódios a partir de dados obtidos de uma API externa (**OMDb API**).
 
-## Funcionalidades
-- Buscar séries na API externa
-- Gerenciar séries salvas localmente
-- Buscar episódios por série
-- Listar séries buscadas
-- Buscar séries por título, ator ou categoria
-- Obter top 5 séries com maior avaliação
-- Filtrar séries por total de temporadas e avaliação
-- Buscar episódios por trecho do nome
-- Obter top episódios de uma série
-- Buscar episódios lançados após uma data específica
-- Tradução de textos utilizando o ChatGPT
+O sistema combina:
+- Consumo de APIs REST
+- Persistência com **Spring Data JPA**
+- Consultas avançadas com **JPQL**
+- Uso de **Java Streams** e **Optional**
+- Integração com a **OpenAI API (ChatGPT)** para tradução automática de textos
 
-## Como Executar
-1. Clone o repositório:
-```bash
-git clone <URL-do-seu-repositorio>
-Compile o projeto Java.
-Configure as variáveis de ambiente necessárias, como a chave da API da OpenAI ('OPENAI_API
-Execute a classe 'Principal
-Depender
-Java 11 ou superior
-Biblioteca para manipulação de JSON (não especificada, incluir se necessário)
-Repositório de dados ('SerieRepository
-Biblioteca do OpenAI (okanning/openai-java, por exemplo)
-Bota de mola de estrutura
-Código de Serviços Adicionais
-Classe de Tradução com ChatGPT
-Java
-Copiar
-package br.com.alura.screenmatch.service;
+Este projeto tem foco em **boas práticas de arquitetura**, clareza de código e domínio do ecossistema Java moderno.
 
-import com.theokanning.openai.completion.CompletionRequest;
-import com.theokanning.openai.service.OpenAiService;
+---
 
+## 🚀 Funcionalidades
+
+### 📺 Séries
+- Buscar séries diretamente na **OMDb API**
+- Salvar séries no banco de dados local
+- Buscar séries por:
+    - Título (case-insensitive)
+    - Ator
+    - Categoria (gênero)
+    - Avaliação mínima
+    - Total máximo de temporadas
+- Listar as **Top 5 séries mais bem avaliadas**
+- Consultar séries com episódios mais recentes
+
+### 🎞️ Episódios
+- Listar episódios por série
+- Buscar episódios por:
+    - Trecho do título
+    - Temporada específica
+    - Ano de lançamento
+- Obter os **Top 5 episódios mais bem avaliados** de uma série
+
+### 🌎 Integrações
+- Consumo genérico de APIs REST usando `HttpClient`
+- Tradução automática de textos utilizando **ChatGPT (OpenAI API)**
+
+---
+
+## 🧱 Arquitetura do Projeto
+
+Estrutura principal do projeto:
+
+br.com.alura.screenmatch
+├── model → Entidades JPA (Serie, Episodio, Categoria)
+├── repository → Repositórios Spring Data JPA
+├── service → Regras de negócio e integrações externas
+├── principal → Classe principal de execução
+
+yaml
+Copiar código
+
+---
+
+## 🗄️ Persistência de Dados
+
+O projeto utiliza **Spring Data JPA** para persistência de dados, com:
+
+- Consultas derivadas
+- Consultas personalizadas com **JPQL**
+- Relacionamentos entre entidades (`@OneToMany`)
+- Uso de agregações como `MAX`, `ORDER BY`
+
+### Exemplo de Repositório
+
+```java
+public interface SerieRepository extends JpaRepository<Serie, Long> {
+
+    Optional<Serie> findByTituloContainingIgnoreCase(String nomeSerie);
+
+    List<Serie> findTop5ByOrderByAvaliacaoDesc();
+}
+🌐 Consumo de API Externa (OMDb)
+Os dados de séries e episódios são obtidos por meio da OMDb API.
+
+Classe responsável pelo consumo genérico:
+
+java
+Copiar código
+public class ConsumoApi {
+
+    public String obterDados(String endereco) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(endereco))
+                .build();
+
+        try {
+            HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+🤖 Integração com ChatGPT (OpenAI API)
+O projeto possui um serviço responsável por traduzir textos automaticamente utilizando o ChatGPT.
+
+java
+Copiar código
 public class ConsultaChatGPT {
+
     public static String obterTraducao(String texto) {
-        OpenAiService service = new OpenAiService(System.getenv("OPENAI_APIKEY"));
+        OpenAiService service =
+            new OpenAiService(System.getenv("OPENAI_APIKEY"));
 
         CompletionRequest requisicao = CompletionRequest.builder()
                 .model("gpt-3.5-turbo-instruct")
@@ -55,43 +122,64 @@ public class ConsultaChatGPT {
         return resposta.getChoices().get(0).getText();
     }
 }
-Classe de Consumo de API Genérica
-Java
-Copiar
-package br.com.alura.screenmatch.service;
+⚙️ Tecnologias Utilizadas
+Java 11+
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+Spring Boot
 
-public class ConsumoApi {
+Spring Data JPA
 
-    public String obterDados(String endereco) {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(endereco))
-                .build();
-        HttpResponse<String> response = null;
-        try {
-            response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+Hibernate
 
-        String json = response.body();
-        return json;
-    }
-}
-Observações
-Para funcionalidades envolvendo busca por episódios ou séries, o sistema utiliza uma API externa (OMDb API) com uma chave de API.
-Para tradução via ChatGPT, é necessário configurar a variável de ambiente 'OPENAI_API
-Adaptar
-Contato
-Dúvidas ou sugestões, entre em contato: [seu email ou github]
+JPQL
 
-Este projeto demonstra integração com APIs externas, uso de Java Streams, Optionals, além de consumo de APIs REST e integração com OpenAI para traduções automáticas.
+OMDb API
+
+OpenAI API (ChatGPT)
+
+HttpClient (Java 11)
+
+Maven
+
+Banco de dados relacional (H2, PostgreSQL, MySQL, etc.)
+
+▶️ Como Executar o Projeto
+1️⃣ Clonar o repositório
+bash
+Copiar código
+git clone https://github.com/seu-usuario/screenmatch.git
+2️⃣ Configurar variáveis de ambiente
+OMDb API
+bash
+Copiar código
+OMDB_APIKEY=sua_chave_aqui
+OpenAI API
+bash
+Copiar código
+OPENAI_APIKEY=sua_chave_aqui
+3️⃣ Compilar o projeto
+bash
+Copiar código
+mvn clean install
+4️⃣ Executar a aplicação
+Execute a classe principal:
+
+java
+Copiar código
+Principal.java
+📌 Observações
+O uso da OMDb API exige uma chave válida
+
+A funcionalidade de tradução depende da OpenAI API
+
+Projeto ideal para fins educacionais e portfólio
+
+Demonstra domínio de:
+
+APIs REST
+
+JPA avançado
+
+Java moderno
+
+Integrações externas
